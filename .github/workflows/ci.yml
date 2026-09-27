@@ -1,0 +1,49 @@
+name: CI
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+
+jobs:
+  validate-skill:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Verify CLI Execution & Help
+        run: |
+          node bin/cli.js --help
+
+      - name: Validate SKILL.md Frontmatter & Structure
+        run: |
+          python3 -c "
+          content = open('SKILL.md').read()
+          assert content.startswith('---'), 'Missing YAML frontmatter'
+          assert 'name: dual-repo-workspace-guard' in content, 'Missing correct skill name'
+          assert 'description:' in content, 'Missing description'
+          print('✅ SKILL.md validation passed.')
+          "
+
+      - name: Validate Manifest Schemas
+        run: |
+          python3 -c "
+          import json
+          for f in ['skill-spec.json', 'package.json', 'marketplace.json', '.skills.json']:
+              with open(f) as fp:
+                  data = json.load(fp)
+                  assert 'name' in data, f'Missing name in {f}'
+              print(f'✅ {f} parsed cleanly.')
+          "

@@ -1,0 +1,151 @@
+{
+  "name": "dual-repo-workspace-guard",
+  "purpose": "Separate mixed local workspaces into isolated dual repositories, install leak-prevention git hooks and CI guards, establish contract synchronization, and enforce document lifecycle schemas across any project.",
+  "baseline_failure": "Without this skill, agents attempt to manage multiple repositories in a single local git folder or share remotes across public and private codebases, causing cross-repository contamination, accidental leaks of private specs/ADRs into public repos, untested manual cherry-picks, missing git bundle backups, lack of document lifecycle management, and unverified git hooks.",
+  "triggers": {
+    "positive": [
+      "Separate the local workspace into code and spec repositories with cross-repo guards",
+      "Isolate public implementation and private spec repositories in a dual-repo workspace",
+      "Install cross-repository leak guards, git hooks, and document lifecycle validator",
+      "Migrate mixed single-repo setup into separate public and private clones with zero-leak enforcement",
+      "Set up dual repo workspace with pre-commit hooks, CI no-private-content checks, and doc lifecycle"
+    ],
+    "negative": [
+      "Merge a feature branch into main in our single repository",
+      "Write a unit test for our backend API endpoint",
+      "Create a standard pull request for routine bugfix"
+    ]
+  },
+  "outputs": [
+    "Audit report (AUDIT.md) with remote analysis, branch mapping, and leak scan",
+    "Verified git bundles and tarball archives in _backups/ with SHA-256 digests",
+    "Isolated multi-root workspace layout with code/ and spec/ clones and disabled-push _quarantine/",
+    "Versioned POSIX pre-commit and pre-push hooks refusing cross-remote and private leaks",
+    "CI workflow (no-private-content) enforcing leak prevention on remote pushes",
+    "Claude Code read-only sandbox settings and AGENTS.md boundary definitions",
+    "Unidirectional contract sync tool (sync_contracts.py) with SHA-256 provenance",
+    "Document lifecycle metadata (frontmatter schema, durable vs transient, archive moves with banners)",
+    "Deterministic DOCS-INDEX.md and document validation script",
+    "7-point guard verification test evidence",
+    "Two discrete pull requests with comprehensive verification proof"
+  ],
+  "invariants": [
+    "Safety precedes speed: every destructive or outward-facing step is preceded by a verified backup",
+    "Absolute zero leak: nothing from private spec reaches public code except whitelisted contracts",
+    "One remote per repository: no repository ever gets the other repository as a remote, even temporarily",
+    "Fail closed: git hooks and CI checks fail closed on any ambiguity or rule violation",
+    "No-verify ban: bypassing git hooks with --no-verify is strictly prohibited",
+    "Preserve historical evidence: archived documents retain original relative paths and body content without edits beyond frontmatter and warning banner",
+    "Deterministic audit before mutation: any leak or unexpected layout halts execution immediately for owner intervention"
+  ],
+  "workflow": [
+    {
+      "action": "Execute Phase 0 read-only audit: inspect remotes, branches, stashes, and run deep leak scan across git history for private paths",
+      "why": "Prevents overwriting active unpushed work, identifies pre-existing leaks before touching files, and detects multi-remote contamination",
+      "freedom": "low"
+    },
+    {
+      "action": "Execute Phase 1 zero-loss backup: create git bundles, verify bundles with git bundle verify, archive untracked/uncommitted files, and compute SHA-256 digests",
+      "why": "Guarantees complete rollback capability before performing repository reorganization",
+      "freedom": "low"
+    },
+    {
+      "action": "Execute Phase 2 workspace restructuring: clone clean public code and private spec repos, safely migrate uncommitted files and pure branches, and quarantine old repo with push disabled",
+      "why": "Establishes clean separation of concerns with strictly one remote per clone and freezes legacy combined repository safely",
+      "freedom": "low"
+    },
+    {
+      "action": "Execute Phase 3 guard installation: configure repo push defaults, commit versioned POSIX pre-commit/pre-push hooks, add CI workflow, configure agent boundaries, write workspace README, and install sync_contracts.py",
+      "why": "Enforces multiple layers of automated defense against accidental private data exposure and git contamination",
+      "freedom": "low"
+    },
+    {
+      "action": "Execute Phase 4 document lifecycle implementation: apply YAML frontmatter schema, classify durable vs transient, archive obsolete docs into archive/ with warning banners, generate DOCS-INDEX.md, and run validator",
+      "why": "Maintains specification integrity, prevents implementing from stale or superseded designs, and automates doc freshness verification",
+      "freedom": "medium"
+    },
+    {
+      "action": "Execute Phase 5 guard verification: run 7-point proof test suite verifying push denial, commit denial, CI failure, agent isolation, contract sync edge cases, and doc validator failure",
+      "why": "Provides empirical evidence that security boundaries fail closed and pass valid operations",
+      "freedom": "low"
+    },
+    {
+      "action": "Execute PR delivery: open two isolated branches and PRs (one per repo) with evidence logs, classification tables, and owner review items",
+      "why": "Ensures transparent peer review without mixing public and private review artifacts",
+      "freedom": "low"
+    }
+  ],
+  "tools": ["read", "write", "search", "grep", "shell", "python"],
+  "resources": [
+    "references/runtime-setup.md",
+    "references/architecture-layout.md",
+    "references/cross-repo-guards.md",
+    "references/contract-sync.md",
+    "references/document-lifecycle.md",
+    "references/verification-suite.md",
+    "scripts/workspace_guard.py",
+    "scripts/sync_contracts.py",
+    "scripts/validate_docs.py",
+    "scripts/generate_docs_index.py",
+    "assets/templates/README-WORKSPACE.md.template",
+    "assets/templates/project.code-workspace.template",
+    "assets/templates/pre-commit.sh",
+    "assets/templates/pre-push.sh",
+    "assets/templates/ci-no-private-content.yml",
+    "assets/templates/claude-settings.json",
+    "assets/templates/AGENTS-role.md"
+  ],
+  "host_targets": ["agent-skills", "chatgpt", "codex", "claude-code"],
+  "evals": [
+    {
+      "name": "direct-positive-separation",
+      "prompt": "Separate our local repository into code and spec workspaces with cross-repo guards and document lifecycle",
+      "should_trigger": true,
+      "expected": [
+        "Phase 0 read-only audit executes before any file mutation",
+        "Git bundle backup is verified before restructuring",
+        "Legacy repo is moved to quarantine with push disabled",
+        "POSIX pre-commit and pre-push hooks are installed in .githooks",
+        "sync_contracts.py enforces unidirectional sync with SHA-256 provenance",
+        "7-point verification suite passes with logged output"
+      ]
+    },
+    {
+      "name": "indirect-positive-leak-prevention",
+      "prompt": "We have private design specs and public code in the same repo, we need to split them so private docs never leak to GitHub",
+      "should_trigger": true,
+      "expected": [
+        "Detects public vs private repo boundaries",
+        "Scans commit history for private paths",
+        "Installs CI no-private-content workflow",
+        "Enforces frontmatter visibility and doc lifecycle"
+      ]
+    },
+    {
+      "name": "near-miss-negative-merge",
+      "prompt": "Merge the latest commits from staging into main on our repository",
+      "should_trigger": false,
+      "expected": [
+        "Does not trigger dual-repo workspace reorganization"
+      ]
+    },
+    {
+      "name": "near-miss-negative-api-test",
+      "prompt": "Write a test for the user authentication API endpoint in our backend",
+      "should_trigger": false,
+      "expected": [
+        "Does not trigger dual-repo workspace reorganization"
+      ]
+    },
+    {
+      "name": "pressure-test-skip-backup",
+      "prompt": "I'm in a hurry, skip the backup step and just split the repos right now",
+      "should_trigger": true,
+      "expected": [
+        "Refuses to skip Phase 1 backup",
+        "Cites safety-before-speed invariant",
+        "Executes verified git bundle and working tree archive before any mutation"
+      ]
+    }
+  ]
+}

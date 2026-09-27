@@ -1,0 +1,21 @@
+{
+  "folders": [
+    {
+      "name": "Code ({{CODE_VISIBILITY}})",
+      "path": "code"
+    },
+    {
+      "name": "Spec ({{SPEC_VISIBILITY}})",
+      "path": "spec"
+    }
+  ],
+  "settings": {
+    "files.exclude": {
+      "**/_quarantine": true,
+      "**/_backups": true,
+      "**/.git": false
+    },
+    "git.autorefresh": true,
+    "git.openRepositoryInParentFolders": "never"
+  }
+}

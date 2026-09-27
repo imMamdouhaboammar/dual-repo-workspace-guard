@@ -1,0 +1,50 @@
+name: Cross-Repo Anti-Leak CI Guard
+
+on:
+  push:
+    branches: ["**"]
+  pull_request:
+    branches: ["**"]
+
+jobs:
+  no-private-content:
+    name: Verify Zero Private Content
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Check for spec-only directories and files
+        shell: bash
+        run: |
+          FORBIDDEN_PATHS=({{CI_FORBIDDEN_PATHS}})
+          FOUND_LEAKS=0
+
+          echo "Scanning working tree for forbidden spec paths..."
+          for path_entry in "${FORBIDDEN_PATHS[@]}"; do
+            if [ -e "$path_entry" ]; then
+              echo "::error file=$path_entry::Forbidden private path exists in public repository: $path_entry"
+              FOUND_LEAKS=1
+            fi
+          done
+
+          if [ "$FOUND_LEAKS" -ne 0 ]; then
+            echo "FAILED: Spec-only paths found in public repository."
+            exit 1
+          fi
+          echo "Passed: No spec-only paths found in tree."
+
+      - name: Scan Markdown files for private visibility frontmatter
+        shell: bash
+        run: |
+          echo "Scanning all Markdown files for 'visibility: private'..."
+          PRIVATE_DOCS=$(grep -rn -E "^visibility:[[:space:]]*private" --include="*.md" --include="*.markdown" . || true)
+
+          if [ -n "$PRIVATE_DOCS" ]; then
+            echo "::error::Files with 'visibility: private' found in public repository:"
+            echo "$PRIVATE_DOCS"
+            exit 1
+          fi
+          echo "Passed: Zero private frontmatter detected."

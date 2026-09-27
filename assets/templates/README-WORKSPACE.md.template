@@ -1,0 +1,46 @@
+# {{PROJECT_NAME}} Development Workspace
+
+> **LOCAL WORKSPACE FILE — NEVER COMMIT TO ANY GIT REPOSITORY**
+
+This workspace coordinates two isolated repositories for {{PROJECT_NAME}}:
+- `code/`: Implementation code (Visibility: {{CODE_VISIBILITY}})
+- `spec/`: Specifications, architecture, decisions, and research (Visibility: {{SPEC_VISIBILITY}})
+
+---
+
+## Workspace Layout
+
+```text
+{{WORKSPACE_ROOT}}/
+  README-WORKSPACE.md             # This local guide (never committed)
+  {{PROJECT_SLUG}}.code-workspace # Multi-root VS Code configuration
+  code/                           # Clone of public repository (origin = {{CODE_REMOTE_URL}})
+  spec/                           # Clone of private repository (origin = {{SPEC_REMOTE_URL}})
+  code-worktrees/                 # Isolated git worktrees for parallel branches
+  _quarantine/                    # Legacy combined repository (push disabled)
+  _backups/                       # Verified git bundles and tarball archives
+```
+
+---
+
+## Operating Invariants
+
+1. **One Remote Per Repository:**
+   - `code/` remote: `{{CODE_REMOTE_URL}}`
+   - `spec/` remote: `{{SPEC_REMOTE_URL}}`
+   - **Never** add `spec` as a remote in `code`, or `code` as a remote in `spec`.
+2. **Strict Leak Prevention:**
+   - No files from `spec/` may enter `code/` except whitelisted contracts.
+   - Any attempt to commit `visibility: private` content into `code/` is blocked by `.githooks/pre-commit` and CI.
+3. **Strict Ban on `--no-verify`:**
+   - Bypassing Git hooks with `git commit --no-verify` or `git push --no-verify` is strictly forbidden.
+4. **Contract Synchronization:**
+   - All contract schemas (`contracts/schemas/*.json`) and examples (`contracts/examples/*.json`) originate in `spec/`.
+   - Sync unidirectionally to `code/` using:
+     ```bash
+     cd code
+     python3 tools/sync_contracts.py --spec ../spec --commit <spec-commit-sha>
+     ```
+5. **Starting Agent Sessions:**
+   - For coding/implementation tasks: launch agent rooted in `code/`.
+   - For architecture, specs, or product decisions: launch agent rooted in `spec/`.

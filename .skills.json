@@ -1,0 +1,16 @@
+{
+  "$schema": "https://skills.sh/schema.json",
+  "name": "dual-repo-workspace-guard",
+  "version": "1.0.0",
+  "description": "Isolate dual-repo workspaces, install anti-leak git guards, contract sync, and document lifecycle schemas.",
+  "repository": "https://github.com/imMamdouhaboammar/dual-repo-workspace-guard",
+  "author": "Mamdouh Aboammar",
+  "license": "MIT",
+  "skill": "SKILL.md",
+  "tags": [
+    "agent-skill",
+    "git-guards",
+    "document-lifecycle",
+    "developer-tools"
+  ]
+}

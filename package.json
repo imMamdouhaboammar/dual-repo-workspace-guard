@@ -1,0 +1,49 @@
+{
+  "name": "dual-repo-workspace-guard",
+  "version": "1.0.0",
+  "description": "Universal AI agent skill and CLI for isolating dual-repo workspaces, installing anti-leak git guards, contract sync, and document lifecycle schemas.",
+  "type": "module",
+  "main": "bin/cli.js",
+  "bin": {
+    "dual-repo-workspace-guard": "./bin/cli.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/imMamdouhaboammar/dual-repo-workspace-guard.git"
+  },
+  "files": [
+    "bin",
+    "scripts",
+    "references",
+    "assets",
+    "evals",
+    "SKILL.md",
+    "skill-spec.json",
+    "marketplace.json",
+    ".skills.json",
+    "install.sh"
+  ],
+  "scripts": {
+    "start": "node bin/cli.js",
+    "install-skill": "node bin/cli.js install",
+    "test": "node bin/cli.js --help"
+  },
+  "keywords": [
+    "agent-skill",
+    "skills-sh",
+    "claude-code",
+    "cursor",
+    "codex",
+    "gemini-cli",
+    "antigravity",
+    "git-guards",
+    "document-lifecycle",
+    "workspace-management"
+  ],
+  "author": "Mamdouh Aboammar <https://github.com/imMamdouhaboammar>",
+  "license": "MIT",
+  "engines": {
+    "node": ">=18.0.0",
+    "bun": ">=1.0.0"
+  }
+}

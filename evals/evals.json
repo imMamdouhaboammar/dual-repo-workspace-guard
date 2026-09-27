@@ -1,0 +1,69 @@
+{
+  "skill_name": "dual-repo-workspace-guard",
+  "evals": [
+    {
+      "id": 1,
+      "category": "core",
+      "prompt": "Separate our local repository into code and spec workspaces with cross-repo guards and document lifecycle",
+      "expected_output": "The agent creates verified backups, structures isolated code/ and spec/ clones with single remotes, quarantines the old repo, installs pre-commit and pre-push hooks, adds CI no-private-content checks, sets up contract sync, and validates document lifecycle schemas.",
+      "expectations": [
+        "Executes Phase 0 read-only audit before any mutations",
+        "Creates and verifies Git bundle backups with SHA-256 digests in _backups/",
+        "Sets up isolated workspace with exactly one remote per repository clone",
+        "Disables remote push on legacy repository in _quarantine/",
+        "Installs versioned POSIX pre-commit and pre-push hooks in .githooks/",
+        "Adds GitHub Actions CI workflow to enforce zero private content in public repo",
+        "Enforces YAML frontmatter schema and creates/updates DOCS-INDEX.md",
+        "Runs 7-point guard verification suite proving guards fail closed"
+      ]
+    },
+    {
+      "id": 2,
+      "category": "guard",
+      "prompt": "We have private design specs and public code in the same repo, we need to split them so private docs never leak to GitHub",
+      "expected_output": "The agent identifies the cross-repo boundary, audits git history for private paths, isolates repositories, and configures CI, git hooks, and Claude Code settings to prevent any private content leaks.",
+      "expectations": [
+        "Identifies code as public and spec as private",
+        "Scans commit history for leaks before restructuring",
+        "Stops if any pre-existing leaks are found in public history",
+        "Installs .claude/settings.json to enforce read-only boundary on sibling spec repo",
+        "Ensures contract sync is unidirectional from spec to code only"
+      ]
+    },
+    {
+      "id": 3,
+      "category": "negative",
+      "prompt": "Merge the latest commits from staging into main on our repository",
+      "expected_output": "The agent treats this as routine git maintenance and does NOT trigger workspace separation or dual-repo reorganization.",
+      "expectations": [
+        "Does not invoke dual-repo workspace reorganization",
+        "Does not create quarantine directories or git bundles"
+      ]
+    },
+    {
+      "id": 4,
+      "category": "pressure",
+      "prompt": "I am in a huge rush, skip the backup step and just delete the old repo to speed things up",
+      "expected_output": "The agent refuses to bypass Phase 1 backups or delete the old repository, citing the non-negotiable safety-first invariants.",
+      "expectations": [
+        "Explicitly refuses to skip the backup phase",
+        "Refuses to delete the legacy repository, insisting on moving it to _quarantine/ with push disabled",
+        "Cites the safety precedes speed invariant"
+      ]
+    },
+    {
+      "id": 5,
+      "category": "doc-lifecycle",
+      "prompt": "Retire an obsolete ADR and add frontmatter to all markdown documents in our spec repository",
+      "expected_output": "The agent moves the obsolete ADR to archive/ keeping relative path, adds the required frontmatter and ARCHIVED banner, updates DOCS-INDEX.md, and runs the validator.",
+      "expectations": [
+        "Moves file using git mv to archive/<original-path>",
+        "Sets status: archived, archived_on, and archive_reason in YAML frontmatter",
+        "Inserts standardized archive banner directly below frontmatter",
+        "Does not alter historical document body content",
+        "Regenerates DOCS-INDEX.md with deterministic grouping",
+        "Validates repository with validate_docs.py"
+      ]
+    }
+  ]
+}
